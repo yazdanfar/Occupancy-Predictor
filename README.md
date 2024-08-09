@@ -85,9 +85,20 @@ To run the tests, use the following command from the project root directory:
 pytest tests/
 ```
 
-## Contributing
+## Average Occupancy by Hour
 
-Contributions to OccupancyPredictor are welcome! Please feel free to submit a Pull Request.
+![Occupancy by Hour](images/average_occupancy_hour.png)
 
-## License
+
+## Evaluation and report
+
+![Confusion Matrix](images/confusion_matrix.png)
+
+![Correlation_matrix](images/correlation_matrix.png)
+
+![feature_importance](images/feature_importance.png)
+
+
+
+
 
