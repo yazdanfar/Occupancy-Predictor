@@ -1,3 +1,5 @@
+# check_occupancy_predictor.py
+
 from occupancy_predictor import OccupancyPredictor
 
 # Initialize the predictor

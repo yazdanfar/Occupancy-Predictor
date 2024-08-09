@@ -1,3 +1,5 @@
+# occupancy_predictor.py
+
 import numpy as np
 from typing import List, Dict, Optional, Tuple
 import joblib
@@ -8,7 +10,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 import warnings
 from sklearn.exceptions import InconsistentVersionWarning
-
 
 class OccupancyPredictor:
     def __init__(self):
@@ -40,9 +41,6 @@ class OccupancyPredictor:
 
         duration = end_time - start_time
         memory_used = end_memory - start_memory
-
-        print(f"Model loading time: {duration:.4f} seconds")
-        print(f"Memory used for model loading: {memory_used:.2f} MB")
 
         return duration, memory_used
 
@@ -78,9 +76,6 @@ class OccupancyPredictor:
         duration = end_time - start_time
         memory_used = end_memory - start_memory
 
-        print(f"Prediction time: {duration:.4f} seconds")
-        print(f"Memory used for prediction: {memory_used:.2f} MB")
-
         return prediction, duration, memory_used
 
     def predict_proba(self, new_data: Dict[str, float], use_light: bool = True) -> Tuple[float, float, float]:
@@ -114,8 +109,5 @@ class OccupancyPredictor:
 
         duration = end_time - start_time
         memory_used = end_memory - start_memory
-
-        print(f"Probability prediction time: {duration:.4f} seconds")
-        print(f"Memory used for probability prediction: {memory_used:.2f} MB")
 
         return probability, duration, memory_used

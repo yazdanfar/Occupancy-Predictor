@@ -40,27 +40,35 @@ def test_load_models(predictor, models_path):
 
 def test_predict_with_light(predictor, sample_data, models_path):
     predictor.load_models(models_path)
-    prediction = predictor.predict(sample_data, use_light=True)
+    prediction, duration, memory = predictor.predict(sample_data, use_light=True)
     assert isinstance(prediction, int)
     assert prediction in [0, 1]
+    assert isinstance(duration, float)
+    assert isinstance(memory, float)
 
 def test_predict_without_light(predictor, sample_data, models_path):
     predictor.load_models(models_path)
-    prediction = predictor.predict(sample_data, use_light=False)
+    prediction, duration, memory = predictor.predict(sample_data, use_light=False)
     assert isinstance(prediction, int)
     assert prediction in [0, 1]
+    assert isinstance(duration, float)
+    assert isinstance(memory, float)
 
 def test_predict_proba_with_light(predictor, sample_data, models_path):
     predictor.load_models(models_path)
-    probability = predictor.predict_proba(sample_data, use_light=True)
+    probability, duration, memory = predictor.predict_proba(sample_data, use_light=True)
     assert isinstance(probability, float)
     assert 0 <= probability <= 1
+    assert isinstance(duration, float)
+    assert isinstance(memory, float)
 
 def test_predict_proba_without_light(predictor, sample_data, models_path):
     predictor.load_models(models_path)
-    probability = predictor.predict_proba(sample_data, use_light=False)
+    probability, duration, memory = predictor.predict_proba(sample_data, use_light=False)
     assert isinstance(probability, float)
     assert 0 <= probability <= 1
+    assert isinstance(duration, float)
+    assert isinstance(memory, float)
 
 def test_predict_without_loading_models(predictor, sample_data):
     with pytest.raises(ValueError):
