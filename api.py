@@ -1,53 +1,41 @@
-# api.py
+# app.py
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+import streamlit as st
 from occupancy_predictor import OccupancyPredictor
-
-app = FastAPI(title="Occupancy Predictor API", description="API for predicting room occupancy")
 
 # Initialize the predictor
 predictor = OccupancyPredictor()
 
+# Load the models
+predictor.load_models('models/')
 
-# Load the models at startup
-@app.on_event("startup")
-async def startup_event():
-    try:
-        predictor.load_models('models/')
-        print("Models loaded successfully.")
-    except Exception as e:
-        print(f"Failed to load models: {str(e)}")
-        raise
+st.title('Occupancy Predictor')
 
+st.write('Enter the following data to predict room occupancy:')
 
-class PredictionInput(BaseModel):
-    Temperature: float
-    Humidity: float
-    Light: float
-    CO2: float
-    HumidityRatio: float
+temperature = st.number_input('Temperature', value=22.5, step=0.1)
+humidity = st.number_input('Humidity', value=27.2, step=0.1)
+light = st.number_input('Light', value=400, step=1)
+co2 = st.number_input('CO2', value=700, step=1)
+humidity_ratio = st.number_input('Humidity Ratio', value=0.0048, step=0.0001, format="%.4f")
 
+if st.button('Predict'):
+    input_data = {
+        'Temperature': temperature,
+        'Humidity': humidity,
+        'Light': light,
+        'CO2': co2,
+        'HumidityRatio': humidity_ratio
+    }
 
-class PredictionOutput(BaseModel):
-    prediction: int
-    probability: float
+    prediction, pred_time, pred_memory = predictor.predict(input_data)
+    probability, prob_time, prob_memory = predictor.predict_proba(input_data)
 
+    st.write(f"Prediction: {'Occupied' if prediction == 1 else 'Not Occupied'}")
+    st.write(f"Probability of occupancy: {probability:.4f}")
 
-@app.post("/predict", response_model=PredictionOutput)
-async def predict(input_data: PredictionInput):
-    try:
-        prediction, _, _ = predictor.predict(input_data.dict())
-        probability, _, _ = predictor.predict_proba(input_data.dict())
-
-        return PredictionOutput(
-            prediction=prediction,
-            probability=probability
-        )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@app.get("/")
-async def root():
-    return {"message": "Welcome to the Occupancy Predictor API. Send POST requests to /predict endpoint."}
+    st.write("\nPerformance Metrics:")
+    st.write(f"Prediction time: {pred_time:.4f} seconds")
+    st.write(f"Prediction memory usage: {pred_memory:.2f} MB")
+    st.write(f"Probability calculation time: {prob_time:.4f} seconds")
+    st.write(f"Probability calculation memory usage: {prob_memory:.2f} MB")
